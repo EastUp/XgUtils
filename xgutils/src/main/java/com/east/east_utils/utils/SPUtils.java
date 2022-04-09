@@ -171,6 +171,10 @@ public class SPUtils {
         return getBoolean(null, key);
     }
 
+    public static boolean getBoolean(String key, boolean defValue) {
+        return getBoolean(null, key, defValue);
+    }
+
     /**
      * Retrieve a boolean value from the preferences.
      *
@@ -183,6 +187,17 @@ public class SPUtils {
     }
 
     /**
+     * Retrieve a boolean value from the preferences.
+     *
+     * @param name
+     * @param key
+     * @return
+     */
+    public static boolean getBoolean(String name, String key, boolean defValue) {
+        return getSharedPreferences(name).getBoolean(key, defValue);
+    }
+
+    /**
      * Retrieve a long value from the preferences.
      *
      * @param key
@@ -190,6 +205,10 @@ public class SPUtils {
      */
     public static long getLong(String key) {
         return getLong(null, key);
+    }
+
+    public static long getLong(String key, long defValue) {
+        return getLong(null, key, defValue);
     }
 
     /**
@@ -203,6 +222,10 @@ public class SPUtils {
         return getSharedPreferences(name).getLong(key, 0l);
     }
 
+    public static long getLong(String name, String key, long defValue) {
+        return getSharedPreferences(name).getLong(key, defValue);
+    }
+
     /**
      * Retrieve a float value from the preferences.
      *
@@ -211,6 +234,10 @@ public class SPUtils {
      */
     public static float getFloat(String key) {
         return getFloat(null, key);
+    }
+
+    public static float getFloat(String key, float defValue) {
+        return getFloat(null, key, defValue);
     }
 
     /**
@@ -224,6 +251,10 @@ public class SPUtils {
         return getSharedPreferences(name).getFloat(key, 0f);
     }
 
+    public static float getFloat(String name, String key, float defValue) {
+        return getSharedPreferences(name).getFloat(key, defValue);
+    }
+
     /**
      * Retrieve a int value from the preferences.
      *
@@ -232,6 +263,10 @@ public class SPUtils {
      */
     public static int getInt(String key) {
         return getInt(null, key);
+    }
+
+    public static int getInt(String key, int defValue) {
+        return getInt(null, key, defValue);
     }
 
     /**
@@ -243,6 +278,10 @@ public class SPUtils {
      */
     public static int getInt(String name, String key) {
         return getSharedPreferences(name).getInt(key, 0);
+    }
+
+    public static int getInt(String name, String key, int defValue) {
+        return getSharedPreferences(name).getInt(key, defValue);
     }
 
     /**
@@ -264,6 +303,10 @@ public class SPUtils {
      */
     public static String getString(String name, String key) {
         return getSharedPreferences(name).getString(key, null);
+    }
+
+    public static String getString(String name, String key, String defValue) {
+        return getSharedPreferences(name).getString(key, defValue);
     }
 
     /**
