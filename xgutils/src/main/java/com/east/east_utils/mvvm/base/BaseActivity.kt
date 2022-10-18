@@ -27,9 +27,9 @@ abstract class BaseActivity<T : ViewDataBinding,VM:BaseViewModel> : AppCompatAct
 
     abstract val viewModelId : Int
 
-    lateinit var mBinding: T
+    lateinit var binding: T
 
-    var mVm :VM ?= null
+    lateinit var vm :VM
 
     /**
      * 在superOnCreate之前调用
@@ -41,7 +41,18 @@ abstract class BaseActivity<T : ViewDataBinding,VM:BaseViewModel> : AppCompatAct
      */
     open fun beforeVMInit() {}
 
-    open fun initViewModel() : VM?{return null}
+    open fun initViewModel() : VM = kotlin.run {
+        val modelClass: Class<out ViewModel>
+        val type = javaClass.genericSuperclass
+        //根据反射获取泛型的class
+        modelClass = if (type is ParameterizedType) {
+            type.actualTypeArguments[1] as Class<out ViewModel>
+        } else {
+            //如果没有指定泛型参数，则默认使用BaseViewModel
+            ViewModel::class.java
+        }
+        viewModel(modelClass) as VM
+    }
 
     /**
      *  在superOnCreate之后调用
@@ -55,24 +66,24 @@ abstract class BaseActivity<T : ViewDataBinding,VM:BaseViewModel> : AppCompatAct
     override fun onCreate(savedInstanceState: Bundle?) {
         beforeSuperOnCreate()
         super.onCreate(savedInstanceState)
-        mBinding = DataBindingUtil.setContentView(this, layoutId)
-        mBinding.lifecycleOwner = this
+        binding = DataBindingUtil.setContentView(this, layoutId)
+        binding.lifecycleOwner = this
         beforeVMInit()
-        mVm = initViewModel()
-        if(mVm == null){
-            val modelClass: Class<out ViewModel>
-            val type = javaClass.genericSuperclass
-            //根据反射获取泛型的class
-            modelClass = if (type is ParameterizedType) {
-                type.actualTypeArguments[1] as Class<out ViewModel>
-            } else {
-                //如果没有指定泛型参数，则默认使用BaseViewModel
-                ViewModel::class.java
-            }
-            mVm = viewModel(modelClass) as VM
-        }
+        vm = initViewModel()
+//        if(vm == null){
+//            val modelClass: Class<out ViewModel>
+//            val type = javaClass.genericSuperclass
+//            //根据反射获取泛型的class
+//            modelClass = if (type is ParameterizedType) {
+//                type.actualTypeArguments[1] as Class<out ViewModel>
+//            } else {
+//                //如果没有指定泛型参数，则默认使用BaseViewModel
+//                ViewModel::class.java
+//            }
+//            vm = viewModel(modelClass) as VM
+//        }
         //关联ViewModel
-        mBinding.setVariable(viewModelId,mVm)
+        binding.setVariable(viewModelId,vm)
         registorUIChangeLiveDataCallBack()
 
         initData()
@@ -86,33 +97,33 @@ abstract class BaseActivity<T : ViewDataBinding,VM:BaseViewModel> : AppCompatAct
      */
     protected fun registorUIChangeLiveDataCallBack() {
         //加载对话框显示
-        mVm!!.mUc.showDialogEvent.observe(this, Observer {
+        vm.uc.showDialogEvent.observe(this) {
 
-        })
+        }
         //加载对话框消失
-        mVm!!.mUc.dismissDialogEvent.observe(this, Observer {
+        vm.uc.dismissDialogEvent.observe(this) {
 
-        })
+        }
         //跳入新页面
-        mVm!!.mUc.startActivityEvent
+        vm.uc.startActivityEvent
             .observe(this, Observer {
                 val clz = it[ParameterField.CLASS] as Class<*>
                 val bundle = it[ParameterField.BUNDLE] as Bundle?
                 startActivity(clz, bundle)
             })
         //跳入ContainerActivity
-        mVm!!.mUc.startContainerActivityEvent
-            .observe(this, Observer {
+        vm.uc.startContainerActivityEvent
+            .observe(this) {
 
-            })
+            }
         //关闭界面
-        mVm!!.mUc.finishEvent.observe(this, Observer {
+        vm.uc.finishEvent.observe(this) {
             finish()
-        })
+        }
         //关闭上一层
-        mVm!!.mUc.onBackPressedEvent.observe(this, Observer {
+        vm.uc.onBackPressedEvent.observe(this) {
             onBackPressed()
-        })
+        }
     }
 
 

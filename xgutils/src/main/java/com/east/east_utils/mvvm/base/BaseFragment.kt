@@ -95,31 +95,31 @@ abstract class BaseFragment<T:ViewDataBinding, VM: BaseViewModel> :Fragment(){
      */
     protected fun registorUIChangeLiveDataCallBack() {
         //加载对话框显示
-        mVm!!.mUc.showDialogEvent.observe(viewLifecycleOwner, Observer {
+        mVm!!.uc.showDialogEvent.observe(viewLifecycleOwner, Observer {
 
         })
         //加载对话框消失
-        mVm!!.mUc.dismissDialogEvent.observe(viewLifecycleOwner, Observer {
+        mVm!!.uc.dismissDialogEvent.observe(viewLifecycleOwner, Observer {
 
         })
         //跳入新页面
-        mVm!!.mUc.startActivityEvent
+        mVm!!.uc.startActivityEvent
             .observe(viewLifecycleOwner, Observer {
                 val clz = it[ParameterField.CLASS] as Class<*>
                 val bundle = it[ParameterField.BUNDLE] as Bundle?
                 startActivity(clz, bundle)
             })
         //跳入ContainerActivity
-        mVm!!.mUc.startContainerActivityEvent
+        mVm!!.uc.startContainerActivityEvent
             .observe(viewLifecycleOwner, Observer {
 
             })
         //关闭界面
-        mVm!!.mUc.finishEvent.observe(viewLifecycleOwner, Observer {
+        mVm!!.uc.finishEvent.observe(viewLifecycleOwner, Observer {
             activity?.finish()
         })
         //关闭上一层
-        mVm!!.mUc.onBackPressedEvent.observe(viewLifecycleOwner, Observer {
+        mVm!!.uc.onBackPressedEvent.observe(viewLifecycleOwner, Observer {
             activity?.onBackPressed()
         })
     }

@@ -16,18 +16,18 @@ import java.util.HashMap
  */
 open class BaseViewModel(application: Application) : AndroidViewModel(application) {
 
-    var mUc : UIChangeEvent = UIChangeEvent()
+    var uc : UIChangeEvent = UIChangeEvent()
 
     fun showDialog() {
         showDialog("请稍后...")
     }
 
     fun showDialog(title: String) {
-        mUc.showDialogEvent.postValue(title)
+        uc.showDialogEvent.postValue(title)
     }
 
     fun dismissDialog() {
-        mUc.dismissDialogEvent.value = null
+        uc.dismissDialogEvent.value = null
     }
 
     /**
@@ -51,7 +51,7 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
         if (bundle != null) {
             params[ParameterField.BUNDLE] = bundle
         }
-        mUc.startActivityEvent.postValue(params)
+        uc.startActivityEvent.postValue(params)
     }
 
     /**
@@ -75,21 +75,21 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
         if (bundle != null) {
             params[ParameterField.BUNDLE] = bundle
         }
-        mUc.startContainerActivityEvent.postValue(params)
+        uc.startContainerActivityEvent.postValue(params)
     }
 
     /**
      * 关闭界面
      */
     fun finish() {
-        mUc.finishEvent.value = null
+        uc.finishEvent.value = null
     }
 
     /**
      * 返回上一层
      */
     fun onBackPressed() {
-        mUc.onBackPressedEvent.value = null
+        uc.onBackPressedEvent.value = null
     }
 
 
