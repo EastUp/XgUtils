@@ -13,7 +13,6 @@ import android.net.NetworkRequest
 import android.os.Build
 
 import java.lang.reflect.InvocationTargetException
-import java.util.HashMap
 
 /**
  * |---------------------------------------------------------------------------------------------------------------|
@@ -29,8 +28,8 @@ class NetWorkMonitorManager private constructor() {
     /**
      * 存储接受网络状态变化消息的方法的map
      */
-    internal var netWorkStateChangedMethodMap: MutableMap<Any, NetWorkStateReceiverMethod>? =
-        HashMap()
+    internal var netWorkStateChangeListeners = ArrayList<NetworkChangeListener>()
+
     internal var receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action!!.equals(ANDROID_NET_CHANGE_ACTION, ignoreCase = true)) {
@@ -39,8 +38,10 @@ class NetWorkMonitorManager private constructor() {
                 var netWorkState = when (netType) {
                     0//None
                     -> NetWorkState.NONE
+
                     1//Wifi
                     -> NetWorkState.WIFI
+
                     else//GPRS
                     -> NetWorkState.GPRS
                 }
@@ -61,8 +62,10 @@ class NetWorkMonitorManager private constructor() {
                 var netWorkState = when (netType) {
                     0//None
                     -> NetWorkState.NONE
+
                     1//Wifi
                     -> NetWorkState.WIFI
+
                     else//GPRS
                     -> NetWorkState.GPRS
                 }
@@ -159,16 +162,12 @@ class NetWorkMonitorManager private constructor() {
      * 注入
      * @param object
      */
-    fun register(`object`: Any?) {
+    fun register(listener: NetworkChangeListener) {
         if (this.application == null) {
             throw NullPointerException("application can not be null,please call the method init(Application application) to add the Application")
         }
-        if (`object` != null) {
-            val netWorkStateReceiverMethod = findMethod(`object`)
-            if (netWorkStateReceiverMethod != null) {
-                netWorkStateChangedMethodMap!![`object`] = netWorkStateReceiverMethod
-            }
-        }
+        if (!netWorkStateChangeListeners.contains(listener))
+            netWorkStateChangeListeners.add(listener)
     }
 
     /**
@@ -178,10 +177,8 @@ class NetWorkMonitorManager private constructor() {
      */
 
 
-    fun unregister(`object`: Any?) {
-        if (`object` != null && netWorkStateChangedMethodMap != null) {
-            netWorkStateChangedMethodMap!!.remove(`object`)
-        }
+    fun unregister(listener: NetworkChangeListener) {
+        netWorkStateChangeListeners.remove(listener)
     }
 
     /**
@@ -189,13 +186,8 @@ class NetWorkMonitorManager private constructor() {
      * @param netWorkState
      */
     private fun postNetState(netWorkState: NetWorkState) {
-        val set = netWorkStateChangedMethodMap!!.keys
-        val iterator = set.iterator()
-        while (iterator.hasNext()) {
-            val `object` = iterator.next()
-            val netWorkStateReceiverMethod = netWorkStateChangedMethodMap!![`object`]
-            invokeMethod(netWorkStateReceiverMethod, netWorkState)
-
+        netWorkStateChangeListeners.forEach {
+            it.onNetWorkStateChange(netWorkState)
         }
     }
 
