@@ -21,13 +21,19 @@ import com.east.east_utils.widgets.common.ClickEntry;
 public class CommonPopupWindow extends PopupWindow {
     final PopupController controller;
 
-    @Override
-    public int getWidth() {
+    public int getRealWidth() {
+        int width = getWidth();
+        if (width > 0) {
+            return width;
+        }
         return controller.mPopupView.getMeasuredWidth();
     }
 
-    @Override
-    public int getHeight() {
+    public int getRealHeight() {
+        int height = getHeight();
+        if (height > 0) {
+            return height;
+        }
         return controller.mPopupView.getMeasuredHeight();
     }
 
@@ -47,7 +53,7 @@ public class CommonPopupWindow extends PopupWindow {
      * 显示在View的上方并居中对齐，前提是Width是WrapContent
      */
     public void showUpWithViewCenter(View view){
-        showAsDropDown(view,(view.getMeasuredWidth()-getWidth())/2,-view.getMeasuredHeight()-getHeight());
+        showAsDropDown(view,(view.getMeasuredWidth() - getRealWidth())/2,-view.getMeasuredHeight()-getHeight());
 //        int[] location = new  int[2] ;
 //        view.getLocationOnScreen(location);
 //        int measuredWidth = view.getMeasuredWidth();
@@ -59,7 +65,7 @@ public class CommonPopupWindow extends PopupWindow {
      * 显示在View的下方并居中对齐，前提是Width是WrapContent
      */
     public void showDownWithViewCenter(View view){
-        showAsDropDown(view,(view.getMeasuredWidth()-getWidth())/2,0);
+        showAsDropDown(view,(view.getMeasuredWidth() - getRealWidth())/2,0);
 //        int[] location = new  int[2] ;
 //        view.getLocationOnScreen(location);
 //        int measuredWidth = view.getMeasuredWidth();
@@ -71,7 +77,7 @@ public class CommonPopupWindow extends PopupWindow {
      * 显示在View的右边并居中对齐，前提是Width是WrapContent
      */
     public void showRightWithViewCenter(View view){
-        showAsDropDown(view, view.getWidth(), (view.getMeasuredHeight() - getHeight())/2-view.getMeasuredHeight());
+        showAsDropDown(view, view.getWidth(), (view.getMeasuredHeight() - getRealHeight())/2-view.getMeasuredHeight());
 //        int[] location = new  int[2] ;
 //        view.getLocationOnScreen(location);
 //        int measuredWidth = view.getMeasuredWidth();
@@ -83,7 +89,7 @@ public class CommonPopupWindow extends PopupWindow {
      * 显示在View的左边并居中对齐，前提是Width是WrapContent
      */
     public void showLeftWithViewCenter(View view){
-        showAsDropDown(view, -getWidth(), (view.getMeasuredHeight() - getHeight())/2-view.getMeasuredHeight());
+        showAsDropDown(view, -getWidth(), (view.getMeasuredHeight() - getRealHeight())/2-view.getMeasuredHeight());
 //        int[] location = new  int[2] ;
 //        view.getLocationOnScreen(location);
 //        int measuredWidth = view.getMeasuredWidth();
